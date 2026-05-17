@@ -13,10 +13,10 @@ An Arduino-based security system designed to monitor multiple independent zones 
 ## Table of Contents
 
 - [Overview](#overview)
+- [Demo](#demo)
 - [Features](#features)
 - [Hardware Requirements](#hardware-requirements)
 - [Circuit & Simulation](#circuit--simulation)
-- [Project Demo](#project-demo)
 - [Wi-Fi Remote Alerts](#wi-fi-remote-alerts)
 - [Software & Dependencies](#software--dependencies)
 - [File Structure](#file-structure)
@@ -35,6 +35,16 @@ A central control board serves as the user interface, built around an LCD screen
 When a breach is detected — whether by motion or by a door/window being opened — the system activates the zone's alarm output, displays the breach details on the LCD screen, and sends a notification through the Wi-Fi module to an **online alert portal**. The notification identifies which zone was breached and which specific sensor triggered it.
 
 All credentials (passwords and RFID tag IDs) are stored in the Arduino's **EEPROM**, meaning they persist across power cycles without needing to be re-entered.
+
+---
+
+## Demo
+
+> 🎥 Click on the image to start the video...
+
+<a href="https://youtu.be/MN1zN7_iqPo">
+  <img src="https://github.com/user-attachments/assets/434a98ae-35c6-4c1a-b8e9-30de9684ebd4" width="800" alt="Watch the video">
+</a>
 
 ---
 
@@ -98,16 +108,6 @@ The full circuit is available as a **live interactive simulation on Wokwi**. It 
 🔗 **[Open the Wokwi Simulation](https://wokwi.com/projects/464290971084275713)**
 
 For step-by-step instructions on how to operate the simulation — including how to enter passwords, scan RFID tags, trigger sensors, and run test scenarios — refer to the dedicated simulation guide included in the Wokwi project.
-
----
-
-## Project Demo
-
-🎥 Click on the image to start the video...
-
-<a href="https://youtu.be/MN1zN7_iqPo">
-  <img src="https://github.com/user-attachments/assets/434a98ae-35c6-4c1a-b8e9-30de9684ebd4" width="800" alt="Watch the video">
-</a>
 
 ---
 
