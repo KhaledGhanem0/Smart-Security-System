@@ -1,5 +1,11 @@
 # Multi-Zone Smart Security System
 
+![Platform](https://img.shields.io/badge/Platform-Arduino%20Mega%202560-00979D?logo=arduino&logoColor=white)
+![IDE](https://img.shields.io/badge/IDE-PlatformIO-FF7F00?logo=platformio&logoColor=white)
+![Language](https://img.shields.io/badge/Language-C%2FC%2B%2B-00599C?logo=c&logoColor=white)
+![Simulation](https://img.shields.io/badge/Simulation-Wokwi-7B68EE?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0tMSAxNEg5VjhIMTF2OHptNCAwaC0yVjhoMnY4eiIvPjwvc3ZnPg==)
+![License](https://img.shields.io/badge/License-MIT-green)
+
 An Arduino-based security system designed to monitor multiple independent zones in real time. Each zone is equipped with its own sensors, alarm output, and access credentials, giving granular control over each monitored area. The system features a local control board, two-step authentication, persistent credential storage, and Wi-Fi connectivity for remote event alerts.
 
 ---
@@ -10,10 +16,13 @@ An Arduino-based security system designed to monitor multiple independent zones 
 - [Features](#features)
 - [Hardware Requirements](#hardware-requirements)
 - [Circuit & Simulation](#circuit--simulation)
-- [Demo](#demo)
+- [Project Demo](#project-demo)
 - [Wi-Fi Remote Alerts](#wi-fi-remote-alerts)
 - [Software & Dependencies](#software--dependencies)
 - [File Structure](#file-structure)
+- [Known Limitations](#known-limitations)
+- [Future Work](#future-work)
+- [License](#license)
 
 ---
 
@@ -92,22 +101,13 @@ For step-by-step instructions on how to operate the simulation — including how
 
 ---
 
-## Demo
+## Project Demo
 
 🎥 Click on the image to start the video...
-<!--
-  To embed a YouTube video, replace the link and thumbnail below:
 
-  [![Watch the demo](https://img.youtube.com/vi/YOUR_VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=YOUR_VIDEO_ID)
-
-  To embed a video file hosted directly in this repository (GitHub supports .mp4 in READMEs):
-
-  https://github.com/YOUR_USERNAME/YOUR_REPO/assets/YOUR_ASSET_ID/your-video.mp4
--->
 <a href="https://youtu.be/MN1zN7_iqPo">
   <img src="https://github.com/user-attachments/assets/434a98ae-35c6-4c1a-b8e9-30de9684ebd4" width="800" alt="Watch the video">
 </a>
-
 
 ---
 
@@ -185,6 +185,7 @@ All libraries are declared in `platformio.ini` and installed automatically when 
 │   └── WiFiHandler.h/.cpp        # Wi-Fi connection management and IFTTT event reporting
 ├── README.md                     # Simulation guide for Wokwi
 ├── diagram.png                   # Circuit diagram screenshot
+├── demo.mp4                      # Project showcase
 └── platformio.ini                # PlatformIO project configuration and library list
 ```
 
@@ -198,3 +199,55 @@ All libraries are declared in `platformio.ini` and installed automatically when 
 - **`RfidHandler`** — Manages communication with the MFRC522 reader, reads tag UIDs, and formats them for comparison against stored credentials.
 - **`SensorHandler`** — Polls PIR sensors and reed switches across all three zones and reports breach events, including which zone and which specific sensor was triggered.
 - **`WiFiHandler`** — Establishes the ESP8266 Wi-Fi connection on startup, maintains it with automatic retry logic, and sends structured HTTP GET requests to the IFTTT Webhooks endpoint on security events.
+
+---
+
+## Known Limitations
+
+- **No encrypted credential storage.** Passwords and RFID tag UIDs are stored as plain text in the Arduino's EEPROM. Anyone with physical access to the board and an EEPROM reader could extract the credentials directly.
+
+- **Single RFID tag per zone.** Each zone supports exactly one registered RFID tag. There is no support for multiple authorised users per zone, and no way to tell from the system logs which individual performed an action.
+
+- **No event timestamps.** The system has no real-time clock (RTC) module. Breach and access events are reported without a date or time, making it difficult to reconstruct a timeline from logs.
+
+- **Notifications sent over HTTP.** Communication with the IFTTT Webhooks service uses plain HTTP, not HTTPS. On an untrusted network, notification content could theoretically be intercepted.
+
+- **Wi-Fi connectivity is not fault-tolerant.** If the network is unavailable for an extended period, there is no local queue of missed events. Notifications that fail to send are silently dropped.
+
+- **Zone count is hardcoded.** The number of zones (`NUM_ZONES = 3`) is a compile-time constant. Changing it requires code modifications and re-flashing, and the hardware must be wired accordingly.
+
+- **Password constraints are minimal.** The system enforces a minimum length of 4 characters and a maximum of 8 digits, but imposes no complexity requirements. Simple numeric passwords like `1111` are accepted.
+
+- **EEPROM write endurance.** The Arduino's EEPROM is rated for approximately 100,000 write cycles per address. Frequent credential changes over the lifetime of the device will eventually degrade storage reliability.
+
+- **No tamper detection.** The system does not detect physical interference with the sensors, wiring, or the control board itself (e.g. a sensor being disconnected or covered).
+
+---
+
+## Future Work
+
+- **Encrypted credential storage.** Passwords and RFID UIDs could be hashed or encrypted before being written to EEPROM, making it significantly harder to extract usable credentials from the hardware.
+
+- **Multi-user access management.** Support for multiple RFID tags per zone would allow different individuals to be authorised independently, each with their own tag, and would enable per-user access logging.
+
+- **Event logging with timestamps.** Integrating an RTC module (e.g. DS3231) and an SD card would allow the system to maintain a local, time-stamped log of all access and breach events — useful for auditing and incident review.
+
+- **Secure remote notifications (HTTPS).** Replacing the current HTTP-based IFTTT integration with an HTTPS connection, or migrating to a dedicated backend API, would protect notification data in transit.
+
+- **Dedicated mobile application.** A companion mobile app could replace the IFTTT dependency, offering a custom notification interface, a live system status dashboard, and remote arm/disarm capability.
+
+- **Scalable zone architecture.** Refactoring the zone configuration to be fully data-driven at runtime (rather than a compile-time constant) would allow the number of monitored zones to be adjusted without modifying or re-flashing the firmware.
+
+- **Battery backup.** Adding a small UPS or battery module would keep the system operational during power outages — a critical gap for any real security application.
+
+- **Tamper detection.** Monitoring for unexpected sensor disconnections or abnormal signal patterns could allow the system to raise an alert if someone attempts to physically defeat a sensor.
+
+- **Over-the-air (OTA) firmware updates.** Leveraging the ESP8266 module to support OTA updates would allow firmware improvements to be deployed without physical access to the board.
+
+- **Web-based configuration interface.** Rather than navigating the keypad menu to update credentials, a small web interface served by the ESP8266 could provide a more convenient way to manage settings remotely.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
