@@ -183,9 +183,8 @@ All libraries are declared in `platformio.ini` and installed automatically when 
 │   ├── RfidHandler.h/.cpp        # RFID reader communication and UID verification
 │   ├── SensorHandler.h/.cpp      # PIR and reed switch monitoring across all zones
 │   └── WiFiHandler.h/.cpp        # Wi-Fi connection management and IFTTT event reporting
-├── README.md                     # Simulation guide for Wokwi
-├── diagram.png                   # Circuit diagram screenshot
-├── demo.mp4                      # Project showcase
+├── diagram.png                   # Circuit diagram 
+├── Demo.mp4                      # Project showcase
 └── platformio.ini                # PlatformIO project configuration and library list
 ```
 
