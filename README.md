@@ -36,6 +36,8 @@ When a breach is detected — whether by motion or by a door/window being opened
 
 All credentials (passwords and RFID tag IDs) are stored in the Arduino's **EEPROM**, meaning they persist across power cycles without needing to be re-entered.
 
+> A custom Arduino Mega shield PCB designed for this system is available in a separate repository: [Custom PCB Shield for Multi-Zone Security System](https://github.com/KhaledGhanem0/PCB-Shield-Security-System)
+
 ---
 
 ## Demo
